@@ -1,0 +1,22 @@
+name: TitanGate CI Pipeline
+
+# 1. THE TRIGGER: Wake up the robots when Aizen pushes to the main branch
+on:
+  push:
+    branches:
+      - main
+
+# 2. THE FACTORY: What the robots should actually do
+jobs:
+  build-test:
+    # Rent a fresh, blank Linux computer in the cloud
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step A: Download a copy of Aizen's code into this blank computer
+      - name: Grab the Code
+        uses: actions/checkout@v4
+
+      # Step B: Run the exact same Docker command we ran on your laptop!
+      - name: Build the Docker Shipping Container
+        run: docker build -t titangate-image .
