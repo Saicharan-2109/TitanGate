@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TitanGate — Your profile, tickets, and booking history.">
+  <title>TitanGate — My Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1C1B1F;
+      color: #EAE3D2;
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      background-image: url('template.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-blend-mode: overlay;
+      background-color: rgba(28, 27, 31, 0.88);
+    }
+
+    /* ---- TOPBAR ---- */
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 30px; border-bottom: 1px solid rgba(234,227,210,0.08);
+      background: rgba(28, 27, 31, 0.97);
+    }
+    .topbar .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .topbar .logo {
+      background: #C84B43; color: #fff; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px;
+      width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+    }
+    .topbar .brand-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: #EAE3D2; }
+    .topbar-actions { display: flex; gap: 20px; align-items: center; }
+    .topbar-actions a { color: #B8B0A0; text-decoration: none; font-size: 11px; letter-spacing: 1px; font-family: 'Oswald', sans-serif; transition: color 0.2s; }
+    .topbar-actions a:hover { color: #fff; }
+    .logout-btn {
+      background: none; border: 1.5px solid #C84B43; color: #C84B43;
+      font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+      padding: 6px 16px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+    }
+    .logout-btn:hover { background: #C84B43; color: #fff; }
+
+    /* ---- CONTAINER ---- */
+    .container { max-width: 750px; margin: 40px auto; padding: 0 20px; }
+
+    /* ---- PROFILE CARD ---- */
+    .profile-card {
+      background: rgba(35, 34, 40, 0.92);
+      border: 1px solid rgba(234,227,210,0.08);
+      padding: 30px;
+      margin-bottom: 35px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+    .profile-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #C84B43;
+    }
+    .profile-avatar-large {
+      width: 72px; height: 72px; border-radius: 50%; background: #C84B43;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid rgba(234,227,210,0.15); flex-shrink: 0;
+    }
+    .profile-details { flex: 1; }
+    .profile-name {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem;
+      color: #fff; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;
+    }
+    .profile-email {
+      font-family: 'Space Mono', monospace; font-size: 0.7rem;
+      color: #B8B0A0; letter-spacing: 0.05em; margin-bottom: 10px;
+    }
+    .profile-meta {
+      display: flex; gap: 20px;
+    }
+    .meta-item {
+      display: flex; flex-direction: column;
+    }
+    .meta-label {
+      font-family: 'Oswald', sans-serif; font-size: 0.55rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #6B6876; margin-bottom: 2px;
+    }
+    .meta-value {
+      font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.85rem;
+      color: #EAE3D2; letter-spacing: 0.05em;
+    }
+    .meta-value.crimson { color: #E05A52; }
+    .profile-loading {
+      font-size: 11px; color: #6B6876; letter-spacing: 2px;
+      padding: 25px 30px;
+    }
+
+    /* ---- SECTION TITLE ---- */
+    .section-title {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem;
+      color: #fff; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 5px;
+    }
+    .section-sub {
+      font-family: 'Space Mono', monospace; font-size: 10px;
+      color: #6B6876; letter-spacing: 2px; margin-bottom: 25px;
+    }
+
+    /* ---- TICKET CARDS ---- */
+    .ticket-card {
+      background: rgba(35, 34, 40, 0.92); border-left: 4px solid #C84B43;
+      padding: 20px 25px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+      transition: background 0.2s;
+    }
+    .ticket-card:hover { background: rgba(45, 44, 52, 0.95); }
+    .ticket-info h3 {
+      font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+      color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
+    }
+    .ticket-info p { font-size: 11px; color: #B8B0A0; letter-spacing: 1px; }
+    .ticket-seat { text-align: right; }
+    .ticket-seat .seat-label { font-family: 'Oswald', sans-serif; font-size: 9px; color: #6B6876; letter-spacing: 2px; text-transform: uppercase; }
+    .ticket-seat .seat-code { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; color: #C84B43; letter-spacing: 2px; }
+    .ticket-seat .zone-tag { font-family: 'Space Mono', monospace; font-size: 9px; color: #B8B0A0; letter-spacing: 1px; text-transform: uppercase; }
+
+    .empty-state { text-align: center; padding: 60px 20px; border: 2px dashed #4A4850; }
+    .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 16px; color: #6B6876; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+    .empty-state p { font-size: 11px; color: #4A4850; }
+    .empty-state a { display: inline-block; margin-top: 20px; color: #C84B43; text-decoration: none; font-weight: 700; font-size: 12px; letter-spacing: 1px; }
+    .empty-state a:hover { color: #E05A52; }
+
+    .loading { text-align: center; padding: 40px; font-size: 12px; color: #6B6876; letter-spacing: 2px; }
+
+    .footer-tag { text-align: center; font-size: 9px; color: #4A4850; letter-spacing: 2px; margin-top: 40px; padding-bottom: 30px; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="index.html" class="brand" style="text-decoration:none;">
+      <div class="logo">TG</div>
+      <span class="brand-name">TitanGate</span>
+    </a>
+    <div class="topbar-actions">
+      <a href="index.html">← BOX OFFICE</a>
+      <button class="logout-btn" onclick="logOut()">LOG OUT</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- PROFILE CARD -->
+    <div class="profile-card" id="profile-card">
+      <div class="profile-loading">LOADING PROFILE...</div>
+    </div>
+
+    <!-- TICKETS SECTION -->
+    <h1 class="section-title">My VIP Tickets</h1>
+    <p class="section-sub">YOUR BOOKED SEATS ACROSS ALL EVENTS</p>
+    <div id="tickets-area">
+      <div class="loading">LOADING YOUR TICKETS...</div>
+    </div>
+
+    <div class="footer-tag">© 2026 TITANGATE — PROFILE v2.0</div>
+  </div>
+  
+  <script>
+    const API = "http://localhost:5000";
+
+    // 👤 LOAD USER PROFILE
+    async function loadProfile() {
+      const card = document.getElementById("profile-card");
+      const token = localStorage.getItem("titangate_token");
+      
+      if (!token) {
+        alert("You need to log in first.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      try {
+        const res = await fetch(API + "/users/me", {
+          headers: { "Authorization": "Bearer " + token }
+        });
+        const data = await res.json();
+
+        if (data.success && data.data && data.data.user) {
+          const user = data.data.user;
+          const joinDate = new Date(user.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
+
+          card.innerHTML = `
+            <div class="profile-avatar-large">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="profile-details">
+              <div class="profile-name">${user.name}</div>
+              <div class="profile-email">${user.email}</div>
+              <div class="profile-meta">
+                <div class="meta-item">
+                  <span class="meta-label">Member Since</span>
+                  <span class="meta-value">${joinDate}</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Status</span>
+                  <span class="meta-value crimson">● ACTIVE</span>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          card.innerHTML = `<div class="profile-loading">COULD NOT LOAD PROFILE</div>`;
+        }
+      } catch (err) {
+        console.error("Profile fetch error:", err);
+        card.innerHTML = `<div class="profile-loading">CONNECTION ERROR — IS BACKEND RUNNING?</div>`;
+      }
+    }
+
+    // 🎫 LOAD BOOKED TICKETS
+    async function loadMyTickets() {
+      const area = document.getElementById("tickets-area");
+      const token = localStorage.getItem("titangate_token");
+      
+      if (!token) return;
+
+      try {
+        const res = await fetch(API + "/tickets/my-tickets", {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          }
+        });
+        
+        const data = await res.json();
+        
+        if (data.success && data.data && data.data.length > 0) {
+          let html = "";
+          data.data.forEach(function (ticket) {
+            html += `
+              <div class="ticket-card">
+                <div class="ticket-info">
+                  <h3>${ticket.event?.eventName || "Unknown Event"}</h3>
+                  <p>${ticket.event?.venue || "—"} · ${ticket.event?.eventDate ? new Date(ticket.event.eventDate).toLocaleDateString() : ""}</p>
+                </div>
+                <div class="ticket-seat">
+                  <div class="seat-label">Seat</div>
+                  <div class="seat-code">${ticket.seatCode || ticket.rowLabel + ticket.seatNumber}</div>
+                  <div class="zone-tag">${ticket.zone || "—"} zone</div>
+                </div>
+              </div>
+            `;
+          });
+          area.innerHTML = html;
+        } else {
+          area.innerHTML = `
+            <div class="empty-state">
+              <h3>No tickets yet</h3>
+              <p>You haven't booked any tickets yet.</p>
+              <a href="index.html">Browse Events →</a>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error("Failed to load tickets:", err);
+        area.innerHTML = `
+          <div class="empty-state">
+            <h3>Connection Error</h3>
+            <p>Could not reach the server. Is your backend running?</p>
+            <a href="index.html">← Go Back</a>
+          </div>
+        `;
+      }
+    }
+
+    function logOut() {
+      localStorage.removeItem("titangate_token");
+      alert("Logged out successfully.");
+      window.location.href = "login.html";
+    }
+
+    // 🚀 INIT
+    loadProfile();
+    loadMyTickets();
+  </script>
+</body>
+</html>

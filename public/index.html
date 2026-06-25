@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TitanGate — Premium brutalist box-office experience. Select concerts, reserve seats, and secure your place at legendary live events.">
+  <title>TitanGate — Box Office</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Oswald:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-deep: #1C1B1F;
+      --bg-card: #232228;
+      --bg-elevated: #2A292F;
+      --cream: #EAE3D2;
+      --cream-muted: #D4CCBB;
+      --cream-dark: #B8B0A0;
+      --white: #FFFFFF;
+      --crimson: #C84B43;
+      --crimson-dark: #A03A34;
+      --crimson-glow: #E05A52;
+      --amber: #C9A96E;
+      --amber-muted: #A6894F;
+      --slate-mid: #4A4850;
+      --slate-light: #6B6876;
+      --mono-green: #7FBF7F;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--white);
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(234,227,210,0.008) 2px, rgba(234,227,210,0.008) 4px),
+        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(234,227,210,0.005) 2px, rgba(234,227,210,0.005) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--slate-mid); border-radius: 0; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--crimson); }
+
+    .mono { font-family: 'Space Mono', monospace; }
+    .syne { font-family: 'Syne', sans-serif; }
+    .oswald { font-family: 'Oswald', sans-serif; }
+
+    .marquee-strip { width: 100%; overflow: hidden; background: var(--crimson); padding: 6px 0; position: relative; z-index: 100; }
+    .marquee-track { display: flex; width: max-content; animation: marqueeScroll 30s linear infinite; }
+    .marquee-track span { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--white); white-space: nowrap; padding: 0 2rem; }
+    .marquee-track span .dot { display: inline-block; width: 5px; height: 5px; background: var(--cream); border-radius: 50%; margin: 0 1.5rem; vertical-align: middle; }
+    @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 2.5rem; border-bottom: 1px solid rgba(234,227,210,0.08); position: relative; }
+    .header-brand { display: flex; align-items: center; gap: 0.6rem; }
+    .header-brand .logo-block { width: 36px; height: 36px; background: var(--crimson); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--white); letter-spacing: -0.05em; }
+    .header-brand h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.15rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--cream); }
+    .header-nav { display: flex; gap: 2.5rem; align-items: center; }
+    .header-nav a { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-dark); text-decoration: none; position: relative; transition: color 0.3s ease; }
+    .header-nav a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--crimson); transition: width 0.3s ease; }
+    .header-nav a:hover { color: var(--white); }
+    .header-nav a:hover::after { width: 100%; }
+    .header-meta { display: flex; align-items: center; gap: 1.5rem; }
+    .header-meta .time-block { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--slate-light); letter-spacing: 0.1em; border: 1px solid var(--slate-mid); padding: 4px 10px; }
+    .header-meta .lang-tag { font-family: 'Oswald', sans-serif; font-size: 0.7rem; color: var(--cream-dark); letter-spacing: 0.15em; cursor: pointer; transition: color 0.3s; }
+    .header-meta .lang-tag:hover { color: var(--white); }
+
+    .hero { position: relative; padding: 3rem 2.5rem 2rem; border-bottom: 1px solid rgba(234,227,210,0.06); overflow: hidden; }
+    .hero::before { content: 'TITANGATE'; position: absolute; top: -20px; right: -30px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14rem; color: rgba(200,75,67,0.04); letter-spacing: -0.03em; pointer-events: none; line-height: 1; z-index: 0; }
+    .hero-grid { display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: end; position: relative; z-index: 1; }
+    .hero-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 4.5rem; line-height: 0.92; letter-spacing: -0.03em; text-transform: uppercase; color: var(--white); }
+    .hero-title .outline-text { -webkit-text-stroke: 1.5px var(--cream); color: transparent; }
+    .hero-title .crimson-text { color: var(--crimson); display: inline-block; position: relative; }
+    .hero-title .crimson-text::after { content: ''; position: absolute; bottom: 4px; left: 0; width: 100%; height: 3px; background: var(--crimson); opacity: 0.4; }
+    .hero-sub { margin-top: 1.2rem; font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--cream-dark); letter-spacing: 0.18em; text-transform: uppercase; line-height: 1.8; max-width: 480px; }
+    .hero-right { text-align: right; }
+    .hero-right .serial-no { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--slate-light); letter-spacing: 0.3em; margin-bottom: 0.5rem; }
+    .hero-right .edition-tag { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 2.8rem; color: var(--cream); letter-spacing: -0.02em; line-height: 1; }
+    .hero-right .edition-sub { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--slate-light); letter-spacing: 0.2em; margin-top: 0.3rem; }
+
+    .tear-divider { width: 100%; height: 1px; border: none; border-top: 2px dashed var(--slate-mid); position: relative; margin: 0; }
+    .tear-divider::before, .tear-divider::after { content: '✂'; position: absolute; top: -10px; font-size: 0.8rem; color: var(--slate-light); }
+    .tear-divider::before { left: 20px; }
+    .tear-divider::after { right: 20px; transform: scaleX(-1); }
+
+    .main-grid { display: grid; grid-template-columns: 280px 1fr 280px; min-height: calc(100vh - 200px); }
+
+    .panel-left { border-right: 1px solid rgba(234,227,210,0.06); padding: 0; display: flex; flex-direction: column; }
+    .panel-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(234,227,210,0.08); }
+    .panel-header h2 { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--cream-dark); margin-bottom: 0.3rem; }
+    .panel-header .panel-line { width: 30px; height: 2px; background: var(--crimson); }
+    .event-list { flex: 1; overflow-y: auto; }
+    .event-item { display: block; padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(234,227,210,0.04); cursor: pointer; transition: all 0.3s ease; position: relative; text-decoration: none; }
+    .event-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: transparent; transition: background 0.3s ease; }
+    .event-item:hover { background: rgba(234,227,210,0.03); }
+    .event-item:hover::before { background: var(--crimson); }
+    .event-item.active { background: rgba(200,75,67,0.06); }
+    .event-item.active::before { background: var(--crimson); }
+    .event-item .event-idx { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 1.6rem; color: var(--slate-mid); letter-spacing: -0.02em; transition: color 0.3s; line-height: 1; }
+    .event-item:hover .event-idx, .event-item.active .event-idx { color: var(--crimson); }
+    .event-item .event-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem; color: var(--cream); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.3rem; line-height: 1.3; transition: color 0.3s; }
+    .event-item:hover .event-name, .event-item.active .event-name { color: var(--white); }
+    .event-item .event-venue { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--slate-light); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 0.25rem; }
+    .event-item .event-date { display: inline-block; margin-top: 0.5rem; font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--cream-dark); letter-spacing: 0.1em; border: 1px solid var(--slate-mid); padding: 2px 8px; transition: border-color 0.3s, color 0.3s; }
+    .event-item:hover .event-date, .event-item.active .event-date { border-color: var(--crimson); color: var(--crimson-glow); }
+    .event-item .event-status { display: inline-block; margin-left: 0.5rem; font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 2px 6px; }
+    .event-status.live { color: var(--mono-green); border: 1px solid var(--mono-green); }
+    .event-status.soon { color: var(--amber); border: 1px solid var(--amber-muted); }
+    .event-status.soldout { color: var(--crimson); border: 1px solid var(--crimson-dark); }
+
+    .vinyl-decor { padding: 1.5rem; display: flex; justify-content: center; align-items: center; border-top: 1px solid rgba(234,227,210,0.06); }
+    .vinyl-disc { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--slate-mid); position: relative; display: flex; align-items: center; justify-content: center; animation: vinylSpin 8s linear infinite; }
+    .vinyl-disc::before { content: ''; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--cream-dark); background: var(--bg-deep); }
+    .vinyl-disc::after { content: ''; position: absolute; inset: 8px; border-radius: 50%; border: 1px solid rgba(234,227,210,0.06); }
+    .vinyl-grooves { position: absolute; inset: 15px; border-radius: 50%; border: 1px solid rgba(234,227,210,0.04); }
+    .vinyl-grooves::before { content: ''; position: absolute; inset: 8px; border-radius: 50%; border: 1px solid rgba(234,227,210,0.04); }
+    .vinyl-grooves::after { content: ''; position: absolute; inset: 16px; border-radius: 50%; border: 1px solid rgba(234,227,210,0.03); }
+    @keyframes vinylSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .panel-center { padding: 1.5rem 2rem; position: relative; }
+    .stage-area { width: 70%; margin: 0 auto 1.8rem; text-align: center; position: relative; }
+    .stage-block { background: linear-gradient(180deg, var(--crimson) 0%, var(--crimson-dark) 100%); padding: 0.8rem 2rem; position: relative; clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%); }
+    .stage-block .stage-label { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--white); }
+    .stage-glow { width: 80%; height: 1px; margin: 0 auto; background: linear-gradient(90deg, transparent, var(--crimson), transparent); opacity: 0.6; }
+    .stage-glow-2 { width: 60%; height: 1px; margin: 4px auto 0; background: linear-gradient(90deg, transparent, var(--crimson-dark), transparent); opacity: 0.3; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0 0.5rem; }
+    .section-header h3 { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--cream-dark); }
+    .section-header .section-code { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--slate-light); letter-spacing: 0.15em; }
+
+    .seating-zone { margin-bottom: 1.5rem; }
+    .seating-zone-label { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--slate-light); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.8rem; }
+    .seating-zone-label::after { content: ''; flex: 1; height: 1px; background: rgba(234,227,210,0.06); }
+
+    .seat { width: 28px; height: 28px; border-radius: 4px 4px 6px 6px; cursor: pointer; position: relative; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
+    .seat.available { border: 1.5px solid var(--cream-muted); background: transparent; }
+    .seat.available:hover { background: var(--cream); border-color: var(--cream); transform: scale(1.2); box-shadow: 0 0 12px rgba(234,227,210,0.3); }
+    .seat.available:hover::after { content: attr(data-id); position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-family: 'Space Mono', monospace; font-size: 0.45rem; color: var(--cream); background: var(--bg-deep); padding: 1px 4px; border: 1px solid var(--cream-muted); white-space: nowrap; z-index: 10; }
+    .seat.reserved { background: var(--amber-muted); border: 1.5px solid var(--amber); cursor: not-allowed; opacity: 0.85; }
+    .seat.reserved::after { content: ''; width: 8px; height: 8px; border: 1.5px solid rgba(255,255,255,0.5); border-radius: 50%; }
+    .seat.booked { background: rgba(200,75,67,0.15); border: 1.5px solid rgba(200,75,67,0.3); cursor: not-allowed; opacity: 0.55; }
+    .seat.booked::before { content: ''; position: absolute; width: 14px; height: 1.5px; background: var(--crimson); transform: rotate(45deg); }
+    .seat.booked::after { content: ''; position: absolute; width: 14px; height: 1.5px; background: var(--crimson); transform: rotate(-45deg); }
+    .seat.selected { background: var(--crimson); border-color: var(--crimson-glow); transform: scale(1.15); box-shadow: 0 0 15px rgba(200,75,67,0.4); animation: seatPulse 2s ease-in-out infinite; }
+    @keyframes seatPulse { 0%, 100% { box-shadow: 0 0 10px rgba(200,75,67,0.3); } 50% { box-shadow: 0 0 20px rgba(200,75,67,0.5); } }
+    .seat.aisle { background: transparent; border: none; cursor: default; pointer-events: none; }
+
+    .row-container { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+    .row-label { width: 20px; font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--slate-light); text-align: center; flex-shrink: 0; letter-spacing: 0.05em; }
+    .row-seats { display: flex; gap: 5px; justify-content: center; flex: 1; }
+
+    .legend { display: flex; gap: 1.8rem; justify-content: center; padding: 1rem 0; margin-top: 0.5rem; border-top: 1px solid rgba(234,227,210,0.06); }
+    .legend-item { display: flex; align-items: center; gap: 0.5rem; }
+    .legend-swatch { width: 14px; height: 14px; border-radius: 3px; }
+    .legend-swatch.avail { border: 1.5px solid var(--cream-muted); background: transparent; }
+    .legend-swatch.rsv { background: var(--amber-muted); border: 1.5px solid var(--amber); }
+    .legend-swatch.bkd { background: rgba(200,75,67,0.15); border: 1.5px solid rgba(200,75,67,0.3); position: relative; }
+    .legend-swatch.bkd::before, .legend-swatch.bkd::after { content: ''; position: absolute; width: 8px; height: 1.5px; background: var(--crimson); top: 50%; left: 50%; }
+    .legend-swatch.bkd::before { transform: translate(-50%, -50%) rotate(45deg); }
+    .legend-swatch.bkd::after { transform: translate(-50%, -50%) rotate(-45deg); }
+    .legend-swatch.sel { background: var(--crimson); border: 1.5px solid var(--crimson-glow); }
+    .legend-label { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--cream-dark); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .panel-right { border-left: 1px solid rgba(234,227,210,0.06); display: flex; flex-direction: column; }
+    .ticket-card { margin: 1.5rem; border: 1px solid rgba(234,227,210,0.1); background: var(--bg-card); position: relative; flex: 1; display: flex; flex-direction: column; }
+    .ticket-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--crimson); }
+    .ticket-header { padding: 1.2rem 1rem; border-bottom: 1px solid rgba(234,227,210,0.06); text-align: center; }
+    .ticket-header .ticket-label { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--cream-dark); }
+    .ticket-header .ticket-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--white); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 0.3rem; }
+    .ticket-body { padding: 1rem; flex: 1; }
+    .ticket-field { margin-bottom: 1rem; }
+    .ticket-field .field-label { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--slate-light); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.2rem; }
+    .ticket-field .field-value { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 0.85rem; color: var(--cream); letter-spacing: 0.08em; }
+    .ticket-field .field-value.crimson { color: var(--crimson-glow); }
+    .ticket-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .ticket-tear { border: none; border-top: 2px dashed var(--slate-mid); margin: 0.5rem 0; position: relative; }
+    .ticket-tear::before { content: ''; position: absolute; left: -14px; top: -8px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg-deep); border: 1px solid rgba(234,227,210,0.06); }
+    .ticket-tear::after { content: ''; position: absolute; right: -14px; top: -8px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg-deep); border: 1px solid rgba(234,227,210,0.06); }
+
+    .barcode-section { padding: 1rem; text-align: center; border-top: 1px solid rgba(234,227,210,0.06); }
+    .barcode { display: flex; justify-content: center; gap: 2px; margin-bottom: 0.5rem; height: 45px; align-items: flex-end; }
+    .barcode .bar { background: var(--cream-muted); width: 2px; }
+    .barcode .bar.thick { width: 3px; }
+    .barcode .bar.thin { width: 1px; }
+    .barcode .bar.gap { width: 4px; background: transparent; }
+    .barcode-number { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--slate-light); letter-spacing: 0.25em; }
+
+    .advisory-block { margin: 1.5rem; border: 3px solid var(--cream); padding: 0.6rem; display: flex; align-items: center; gap: 0.5rem; position: relative; }
+    .advisory-block .advisory-border { border: 1.5px solid var(--cream); padding: 0.5rem 0.6rem; flex: 1; }
+    .advisory-block .advisory-top { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--cream-dark); letter-spacing: 0.15em; text-transform: uppercase; }
+    .advisory-block .advisory-main { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--cream); text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.1; }
+    .advisory-block .advisory-sub { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.7rem; color: var(--cream); letter-spacing: 0.2em; text-transform: uppercase; }
+
+    .confirm-btn { display: block; margin: 0 1.5rem 1.5rem; padding: 1rem; background: var(--crimson); border: none; cursor: pointer; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.8rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--white); position: relative; overflow: hidden; transition: all 0.3s ease; }
+    .confirm-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transition: left 0.5s ease; }
+    .confirm-btn:hover::before { left: 100%; }
+    .confirm-btn:hover { background: var(--crimson-glow); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(200,75,67,0.4); }
+    .confirm-btn:active { transform: translateY(0); }
+
+    .footer-strip { border-top: 1px solid rgba(234,227,210,0.06); padding: 1rem 2.5rem; display: flex; justify-content: space-between; align-items: center; }
+    .footer-left { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--slate-light); letter-spacing: 0.15em; }
+    .footer-center { display: flex; gap: 2rem; }
+    .footer-stat { text-align: center; }
+    .footer-stat .stat-val { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--cream); letter-spacing: 0.02em; }
+    .footer-stat .stat-label { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--slate-light); letter-spacing: 0.15em; text-transform: uppercase; }
+    .footer-right { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--slate-light); letter-spacing: 0.1em; }
+    .footer-right .pulse-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--mono-green); margin-right: 6px; animation: pulseDot 2s ease-in-out infinite; }
+    @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .marquee-bottom { width: 100%; overflow: hidden; background: var(--cream); padding: 5px 0; }
+    .marquee-bottom .marquee-track span { color: var(--bg-deep); font-size: 0.6rem; }
+    .marquee-bottom .marquee-track span .dot { background: var(--crimson); }
+
+    .corner-mark { position: absolute; width: 20px; height: 20px; }
+    .corner-mark::before, .corner-mark::after { content: ''; position: absolute; background: var(--slate-mid); }
+    .corner-mark.tl { top: 10px; left: 10px; } .corner-mark.tl::before { width: 12px; height: 1px; top: 0; left: 0; } .corner-mark.tl::after { width: 1px; height: 12px; top: 0; left: 0; }
+    .corner-mark.tr { top: 10px; right: 10px; } .corner-mark.tr::before { width: 12px; height: 1px; top: 0; right: 0; } .corner-mark.tr::after { width: 1px; height: 12px; top: 0; right: 0; }
+    .corner-mark.bl { bottom: 10px; left: 10px; } .corner-mark.bl::before { width: 12px; height: 1px; bottom: 0; left: 0; } .corner-mark.bl::after { width: 1px; height: 12px; bottom: 0; left: 0; }
+    .corner-mark.br { bottom: 10px; right: 10px; } .corner-mark.br::before { width: 12px; height: 1px; bottom: 0; right: 0; } .corner-mark.br::after { width: 1px; height: 12px; bottom: 0; right: 0; }
+
+    .reg-mark { position: absolute; width: 16px; height: 16px; opacity: 0.15; }
+    .reg-mark::before { content: '+'; font-family: 'Space Mono', monospace; font-size: 0.9rem; color: var(--cream); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+    .map-frame { position: relative; border: 1px solid rgba(234,227,210,0.08); padding: 1.5rem; margin-top: 0.5rem; }
+    .map-frame .corner-mark.tl { top: -1px; left: -1px; } .map-frame .corner-mark.tr { top: -1px; right: -1px; }
+    .map-frame .corner-mark.bl { bottom: -1px; left: -1px; } .map-frame .corner-mark.br { bottom: -1px; right: -1px; }
+
+    .price-tier { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid rgba(234,227,210,0.04); }
+    .price-tier:last-child { border-bottom: none; }
+    .price-tier .tier-name { font-family: 'Oswald', sans-serif; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-dark); }
+    .price-tier .tier-price { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--cream); letter-spacing: 0.05em; }
+    .price-tiers { padding: 0.8rem 1rem; border-top: 1px solid rgba(234,227,210,0.06); }
+    .price-tiers .tiers-title { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--slate-light); margin-bottom: 0.5rem; }
+
+    .seat-counter { padding: 1rem; text-align: center; border-top: 1px solid rgba(234,227,210,0.06); }
+    .seat-counter .counter-label { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--slate-light); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.3rem; }
+    .seat-counter .counter-value { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 2.5rem; color: var(--crimson); letter-spacing: -0.02em; line-height: 1; }
+    .seat-counter .counter-sub { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: var(--cream-dark); letter-spacing: 0.1em; margin-top: 0.2rem; }
+    .screen-code { position: absolute; bottom: 8px; right: 12px; font-family: 'Space Mono', monospace; font-size: 0.45rem; color: var(--slate-mid); letter-spacing: 0.15em; }
+
+    /* 🛡️ SHIELD BREAKER: Force selected seats to be clickable */
+.seat.selected {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+/* 🛡️ SHIELD BREAKER 2: Force grey seats to ALWAYS be clickable */
+.seat.available {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+    @media (max-width: 1200px) { .main-grid { grid-template-columns: 240px 1fr 260px; } .hero-title { font-size: 3.5rem; } }
+    @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } .panel-left { border-right: none; border-bottom: 1px solid rgba(234,227,210,0.06); } .panel-right { border-left: none; border-top: 1px solid rgba(234,227,210,0.06); } .event-list { display: flex; overflow-x: auto; } .event-item { min-width: 250px; border-right: 1px solid rgba(234,227,210,0.04); } .hero-title { font-size: 2.5rem; } }
+  </style>
+</head>
+<body>
+  <div class="marquee-strip"><div class="marquee-track"><span>TITANGATE PRESENTS <span class="dot"></span> LIVE CONCERT EXPERIENCE <span class="dot"></span> SEASON 2026 <span class="dot"></span> SECURE YOUR SEAT <span class="dot"></span> LIMITED AVAILABILITY <span class="dot"></span> YOUNG, WILD, AND FREE <span class="dot"></span> TITANGATE PRESENTS <span class="dot"></span> LIVE CONCERT EXPERIENCE <span class="dot"></span> SEASON 2026 <span class="dot"></span> SECURE YOUR SEAT <span class="dot"></span> LIMITED AVAILABILITY <span class="dot"></span> YOUNG, WILD, AND FREE</span><span>TITANGATE PRESENTS <span class="dot"></span> LIVE CONCERT EXPERIENCE <span class="dot"></span> SEASON 2026 <span class="dot"></span> SECURE YOUR SEAT <span class="dot"></span> LIMITED AVAILABILITY <span class="dot"></span> YOUNG, WILD, AND FREE <span class="dot"></span> TITANGATE PRESENTS <span class="dot"></span> LIVE CONCERT EXPERIENCE <span class="dot"></span> SEASON 2026 <span class="dot"></span> SECURE YOUR SEAT <span class="dot"></span> LIMITED AVAILABILITY <span class="dot"></span> YOUNG, WILD, AND FREE</span></div></div>
+
+  <header class="header" id="main-header">
+    <div class="header-brand"><div class="logo-block">TG</div><h1>TitanGate</h1></div>
+    <nav class="header-nav" aria-label="Main navigation"><a href="index.html">BOX OFFICE</a><a href="venue.html">VENUE</a><a href="contact.html">COMM LINK</a><a href="profile.html">MY TICKETS</a><a href="login.html">LOGIN / SIGN UP</a></nav>
+  <a href="profile.html" class="profile-avatar" style="text-decoration: none; background: #C84B43; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid #EAE3D2; margin-left: 15px; transition: 0.2s; overflow: hidden;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+  </header>
+
+  <section class="hero" id="hero-section">
+    <div class="reg-mark" style="top:15px;left:50%;"></div><div class="reg-mark" style="bottom:15px;right:40px;"></div>
+    <div class="hero-grid">
+      <div><h2 class="hero-title"><span class="outline-text">BRING THE</span><br><span class="crimson-text">BEATS</span> TO YOU</h2><p class="hero-sub">FIND YOUR CONCERT ADVENTURE — TRYING NEW EXPERIENCES, MAKING MEMORIES,<br>AND LIVING THEM IS A NATURAL THING WE DO AT OUR YOUNG AGE.<br>EMBRACE THE SOUND. FEEL THE PULSE. OWN THE NIGHT.</p></div>
+      <div class="hero-right"><div class="serial-no">SER. NO. TG-2026-0602</div><div class="edition-tag">2026</div><div class="edition-sub">SUMMER EDITION — VOL. III</div></div>
+    </div>
+  </section>
+
+  <hr class="tear-divider">
+
+  <main class="main-grid" id="main-content">
+   <aside class="panel-left" id="event-panel">
+    <div class="panel-header">
+        <h2>Active Billboards</h2>
+        <div class="panel-line"></div>
+    </div>
+    
+    <div class="event-list" id="active-billboards-container">
+        </div>
+    
+    <div class="vinyl-decor">
+        <div class="vinyl-disc">
+            <div class="vinyl-grooves"></div>
+        </div>
+    </div>
+</aside>
+
+    <section class="panel-center" id="seating-panel">
+      <div class="section-header"><h3 id="venue-title">GMR Arena — Hyderabad</h3><span class="section-code">HALL-A / BLOCK-01 / FLR-GND</span></div>
+      <div class="stage-area"><div class="stage-block"><span class="stage-label">★ STAGE ★</span></div><div class="stage-glow"></div><div class="stage-glow-2"></div></div>
+      <div class="map-frame">
+        <div class="corner-mark tl"></div><div class="corner-mark tr"></div><div class="corner-mark bl"></div><div class="corner-mark br"></div>
+        <div class="seating-zone"><div class="seating-zone-label">VIP — Platinum Circle</div><div id="vip-rows"></div></div>
+        <div class="seating-zone"><div class="seating-zone-label">Premium — Gold Block</div><div id="premium-rows"></div></div>
+        <div class="seating-zone"><div class="seating-zone-label">Standard — Silver Tier</div><div id="standard-rows"></div></div>
+        <span class="screen-code">MAP-REF: TG/2026/BLK-A1</span>
+      </div>
+      <div class="legend" id="seat-legend"><div class="legend-item"><div class="legend-swatch avail"></div><span class="legend-label">Available</span></div><div class="legend-item"><div class="legend-swatch rsv"></div><span class="legend-label">Reserved</span></div><div class="legend-item"><div class="legend-swatch bkd"></div><span class="legend-label">Booked</span></div><div class="legend-item"><div class="legend-swatch sel"></div><span class="legend-label">Selected</span></div></div>
+    </section>
+
+    <aside class="panel-right" id="ticket-panel">
+      <div class="ticket-card">
+        <div class="ticket-header"><div class="ticket-label">Admit One — General Entry</div><div class="ticket-title" id="ticket-event-name">Anirudh Live</div></div>
+        <div class="ticket-body">
+          <div class="ticket-field"><div class="field-label">Venue</div><div class="field-value" id="ticket-venue">GMR Arena, Gachibowli</div></div>
+          <div class="ticket-row"><div class="ticket-field"><div class="field-label">Date</div><div class="field-value" id="ticket-date">14 JUN 2026</div></div><div class="ticket-field"><div class="field-label">Doors Open</div><div class="field-value">18:00 IST</div></div></div>
+          <div class="ticket-row"><div class="ticket-field"><div class="field-label">Section</div><div class="field-value" id="ticket-section">—</div></div><div class="ticket-field"><div class="field-label">Seat(s)</div><div class="field-value crimson" id="ticket-seats">NONE</div></div></div>
+          <hr class="ticket-tear">
+          <div class="seat-counter"><div class="counter-label">Seats Selected</div><div class="counter-value" id="seat-count">0</div><div class="counter-sub" id="seat-total">₹0</div></div>
+        </div>
+        <div class="price-tiers"><div class="tiers-title">Price Tiers</div><div class="price-tier"><span class="tier-name">VIP Platinum</span><span class="tier-price" id="tier-vip">₹8,500</span></div><div class="price-tier"><span class="tier-name">Premium Gold</span><span class="tier-price" id="tier-premium">₹4,500</span></div><div class="price-tier"><span class="tier-name">Standard Silver</span><span class="tier-price" id="tier-standard">₹2,500</span></div></div>
+        <div class="barcode-section"><div class="barcode" id="barcode-display"></div><div class="barcode-number" id="barcode-number">TG-2026-0602-000000</div></div>
+      </div>
+      <div class="advisory-block"><div class="advisory-border"><div class="advisory-top">Parental</div><div class="advisory-main">Advisory</div><div class="advisory-sub">Explicit Content</div></div></div>
+      <button class="confirm-btn" id="confirm-booking" onclick="confirmBooking()">Confirm Booking →</button>
+    </aside>
+  </main>
+
+  <footer class="footer-strip" id="main-footer">
+    <div class="footer-left">© 2026 TITANGATE — ALL RIGHTS RESERVED</div>
+    <div class="footer-center"><div class="footer-stat"><div class="stat-val" id="stat-available">184</div><div class="stat-label">Available</div></div><div class="footer-stat"><div class="stat-val" id="stat-reserved">42</div><div class="stat-label">Reserved</div></div><div class="footer-stat"><div class="stat-val" id="stat-booked">86</div><div class="stat-label">Booked</div></div></div>
+    <div class="footer-right"><span class="pulse-dot"></span>SYSTEM ONLINE — v3.1.2</div>
+  </footer>
+
+  <div class="marquee-bottom"><div class="marquee-track"><span>YOUNG, WILD, AND FREE <span class="dot"></span> TITANGATE BOX OFFICE <span class="dot"></span> SEASON 2026 — SUMMER EDITION <span class="dot"></span> DESIGNED WITH OBSESSION <span class="dot"></span> EVERY SEAT TELLS A STORY <span class="dot"></span> YOUNG, WILD, AND FREE <span class="dot"></span> TITANGATE BOX OFFICE <span class="dot"></span> SEASON 2026 — SUMMER EDITION <span class="dot"></span> DESIGNED WITH OBSESSION <span class="dot"></span> EVERY SEAT TELLS A STORY</span><span>YOUNG, WILD, AND FREE <span class="dot"></span> TITANGATE BOX OFFICE <span class="dot"></span> SEASON 2026 — SUMMER EDITION <span class="dot"></span> DESIGNED WITH OBSESSION <span class="dot"></span> EVERY SEAT TELLS A STORY <span class="dot"></span> YOUNG, WILD, AND FREE <span class="dot"></span> TITANGATE BOX OFFICE <span class="dot"></span> SEASON 2026 — SUMMER EDITION <span class="dot"></span> DESIGNED WITH OBSESSION <span class="dot"></span> EVERY SEAT TELLS A STORY</span></div></div>
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+ <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+
+<script>
+    const BACKEND_URL = "http://localhost:5000";
+    const STATE = { selectedSeats: [], currentEvent: { id: '', name: '', venue: '', date: '' } };
+    let countdownTimer;
+    const socket = io(BACKEND_URL);
+    
+    async function fetchLiveEvents() {
+        console.log("📡 Contacting the Vault for events...");
+        
+        try {
+            const response = await fetch(`${BACKEND_URL}/events`);
+            const result = await response.json();
+            
+            console.log("📦 Vault replied with:", result);
+
+            if (result.success && result.data.length > 0) {
+                const container = document.getElementById('active-billboards-container');
+                
+                if (!container) {
+                    console.error("❌ ERROR: Could not find 'active-billboards-container' in the HTML!");
+                    return;
+                }
+
+                container.innerHTML = ''; // Clear out the container
+
+                result.data.forEach((event, index) => {
+                    // 🎯 FIX: Put the selectEvent function back in so clicking works!
+                    const eventHTML = `
+                        <div class="event-item ${index === 0 ? 'active' : ''}" id="event-${index + 1}" 
+                             onclick="selectEvent(this, '${event._id}', '${event.eventName}', '${event.venue}', 'TBA')">
+                            <div class="event-idx">0${index + 1}</div>
+                            <div class="event-name">${event.eventName}</div>
+                            <div class="event-venue">${event.venue}</div>
+                            <div>
+                                <span class="event-status live">● LIVE</span>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += eventHTML;
+                });
+                
+                console.log("✅ Successfully painted the events on the screen!");
+
+                // 🎯 FIX: Automatically load the seats for the very first event!
+                const firstEvent = result.data[0];
+                const firstEventElement = container.querySelector('.event-item');
+                selectEvent(firstEventElement, firstEvent._id, firstEvent.eventName, firstEvent.venue, 'TBA');
+
+            }
+        } catch (error) {
+            console.error("❌ Failed to load events:", error);
+        }
+    }
+
+    async function buildAllZones() {
+        if (!STATE.currentEvent.id) return;
+        try {
+            const response = await fetch(`${BACKEND_URL}/tickets`);
+            const result = await response.json();
+            if (result.success && result.data) {
+                const currentId = STATE.currentEvent.id.toString();
+                const eventTickets = result.data.filter(t => t.event && t.event._id && t.event._id.toString() === currentId);
+                
+                // Clear old seats
+                document.getElementById('vip-rows').innerHTML = '';
+                document.getElementById('premium-rows').innerHTML = '';
+                document.getElementById('standard-rows').innerHTML = '';
+                
+                // Build new seats
+                buildLiveZone('vip-rows', 'vip', eventTickets.filter(t => t.zone === 'vip'));
+                buildLiveZone('premium-rows', 'premium', eventTickets.filter(t => t.zone === 'premium'));
+                buildLiveZone('standard-rows', 'standard', eventTickets.filter(t => t.zone === 'standard'));
+                updateTicketCard();
+            }
+        } catch (error) { 
+            console.error("❌ Failed to load seats:", error.message); 
+        }
+    }
+
+    function buildLiveZone(containerId, zoneName, ticketsArray) {
+        const container = document.getElementById(containerId);
+        if(!container) return; // Safety check
+        const rowsMap = {};
+        
+        ticketsArray.forEach(ticket => {
+            const label = ticket.rowLabel;
+            if (!label) return;
+            if (!rowsMap[label]) rowsMap[label] = [];
+            rowsMap[label].push(ticket);
+        });
+        
+        Object.keys(rowsMap).sort().forEach(label => {
+            const rowDiv = document.createElement('div'); rowDiv.className = 'row-container';
+            const rowLblL = document.createElement('div'); rowLblL.className = 'row-label'; rowLblL.textContent = label;
+            const rowLblR = document.createElement('div'); rowLblR.className = 'row-label'; rowLblR.textContent = label;
+            const seatsDiv = document.createElement('div'); seatsDiv.className = 'row-seats';
+            const sortedTickets = rowsMap[label].sort((a, b) => parseInt(a.seatNumber, 10) - parseInt(b.seatNumber, 10));
+            
+            sortedTickets.forEach(ticket => {
+                const seatNum = parseInt(ticket.seatNumber, 10) || 0;
+                const seat = document.createElement('div');
+                seat.className = `seat ${ticket.status || 'available'}`;
+                seat.dataset.zone = zoneName; seat.dataset.row = label; seat.dataset.seat = seatNum;
+                seat.dataset.id = ticket.seatCode || `${label}${seatNum}`; seat.dataset.ticketId = ticket._id || '';
+                
+                if (ticket.status === 'available') {
+                    seat.setAttribute('role', 'button'); seat.setAttribute('tabindex', '0');
+                    seat.addEventListener('click', () => toggleSeat(seat));
+                    seat.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSeat(seat); } });
+                } else { 
+                    seat.setAttribute('aria-disabled', 'true'); 
+                }
+                seatsDiv.appendChild(seat);
+            });
+            rowDiv.appendChild(rowLblL); rowDiv.appendChild(seatsDiv); rowDiv.appendChild(rowLblR);
+            container.appendChild(rowDiv);
+        });
+    }
+
+ async function toggleSeat(seat) {
+    // 🛡️ RACE CONDITION GUARD: If this seat is already being processed, ignore the duplicate click.
+    // This prevents the bug where addEventListener + onclick both fire toggleSeat simultaneously.
+    if (seat._processing) {
+        console.log("⏳ Ignoring duplicate click — seat is already being processed.");
+        return;
+    }
+    seat._processing = true; // Lock the gate
+
+    const id = seat.dataset.id;
+    const ticketId = seat.dataset.ticketId; 
+    const token = localStorage.getItem('titangate_token');
+
+    // 🛑 No token? Stop right here.
+    if (!token) {
+        alert("Hold up! You need to log in to lock a seat.");
+        seat._processing = false;
+        return;
+    }
+
+    // ==========================================
+    // 1. UNSELECT LOGIC (Seat is currently Red)
+    // ==========================================
+    if (seat.classList.contains('selected')) { 
+        console.log("Unclick detected! Asking backend to release the lock..."); 
+        
+        try {
+            const cancelResponse = await fetch(`${BACKEND_URL}/tickets/cancel`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                },
+                body: JSON.stringify({ ticketId: ticketId })
+            });
+
+            const cancelData = await cancelResponse.json();
+            
+            if (cancelData.success) {
+                console.log("Lock successfully released by database!");
+                
+                // Scrub off every possible bad class
+                seat.classList.remove('selected', 'reserved', 'booked'); 
+                seat.classList.add('available'); 
+                seat.style.backgroundColor = ''; 
+                seat.style.pointerEvents = '';  // 🎯 FIX: Clear inline style instead of setting 'auto'
+                
+                STATE.selectedSeats = STATE.selectedSeats.filter(s => s.id !== id); 
+                if (typeof updateTicketCard === 'function') updateTicketCard();
+                if (typeof countdownTimer !== 'undefined') clearInterval(countdownTimer); 
+                document.getElementById('confirm-booking').textContent = 'Confirm Booking →';
+            } else {
+                throw new Error(cancelData.message || "Backend refused to unlock the seat.");
+            }
+            
+        } catch (err) {
+            console.error("Failed to release lock:", err);
+            alert("Error: Could not release seat lock. Please refresh the page.");
+        }
+        seat._processing = false; // Unlock the gate
+        return;
+    }
+
+    // ==========================================
+    // 2. THE LOCK PROTOCOL (Seat is currently Grey)
+    // ==========================================
+    
+    // Make it red instantly so the UI feels fast and responsive
+    seat.classList.remove('available', 'reserved', 'booked'); 
+    seat.classList.add('selected'); 
+
+    try {
+        const response = await fetch(`${BACKEND_URL}/tickets/lock`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify({ ticketId: ticketId })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            console.log("Seat successfully locked in database!");
+            STATE.selectedSeats.push({ id, zone: seat.dataset.zone, ticketId: ticketId }); 
+            if (typeof updateTicketCard === 'function') updateTicketCard();
+            if (typeof startFiveMinuteTimer === 'function') startFiveMinuteTimer(); 
+        } else {
+            console.log("We were too slow!");
+            alert("Too slow! Someone else just grabbed this seat.");
+            
+            seat.classList.remove('selected'); 
+            seat.classList.add('booked'); 
+            seat.style.pointerEvents = 'none';
+        }
+    } catch (error) {
+        console.error("Lock failed:", error);
+        seat.classList.remove('selected'); 
+        seat.classList.add('available');
+    }
+    seat._processing = false; // Unlock the gate
+}
+    function startFiveMinuteTimer() {
+        clearInterval(countdownTimer);
+        let timeLeft = 300; 
+        const btn = document.getElementById('confirm-booking'); 
+
+        countdownTimer = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(countdownTimer);
+                btn.textContent = 'LOCK EXPIRED - RELOAD'; 
+                btn.style.background = 'var(--crimson)';
+                STATE.selectedSeats = [];
+                
+                setTimeout(() => {
+                    btn.style.background = '';
+                    btn.textContent = 'Confirm Booking →';
+                    buildAllZones(); 
+                }, 2000);
+                
+            } else {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                btn.textContent = `Confirm Booking (${minutes}:${seconds < 10 ? '0' : ''}${seconds})`;
+                timeLeft--;
+            }
+        }, 1000);
+    }
+
+    function updateTicketCard() {
+        const count = STATE.selectedSeats.length;
+        const prices = { vip: 8500, premium: 4500, standard: 2500 };
+        let total = 0; const seatLabels = []; const zones = new Set();
+        
+        STATE.selectedSeats.forEach(s => { 
+            total += prices[s.zone] || 0; 
+            seatLabels.push(s.id); 
+            zones.add(s.zone.toUpperCase()); 
+        });
+        
+        document.getElementById('seat-count').textContent = count;
+        document.getElementById('seat-total').textContent = `₹${total.toLocaleString()}`;
+        document.getElementById('ticket-seats').textContent = count > 0 ? seatLabels.slice(0, 6).join(', ') + (seatLabels.length > 6 ? '…' : '') : 'NONE';
+        document.getElementById('ticket-section').textContent = zones.size > 0 ? Array.from(zones).join(' / ') : '—';
+        document.getElementById('barcode-number').textContent = `TG-2026-0602-${String(count).padStart(2, '0')}${String(total).padStart(4, '0')}`;
+        
+        const allSeats = document.querySelectorAll('.seat:not(.aisle)'); 
+        let avail = 0, rsv = 0, bkd = 0;
+        
+        allSeats.forEach(s => { 
+            if (s.classList.contains('available')) avail++; 
+            else if (s.classList.contains('reserved')) rsv++; 
+            else if (s.classList.contains('booked')) bkd++; 
+            else if (s.classList.contains('selected')) avail++; 
+        });
+        
+        document.getElementById('stat-available').textContent = avail; 
+        document.getElementById('stat-reserved').textContent = rsv; 
+        document.getElementById('stat-booked').textContent = bkd;
+    }
+
+    function selectEvent(el, id, name, venue, date) {
+        document.querySelectorAll('.event-item').forEach(e => e.classList.remove('active')); 
+        if(el) el.classList.add('active');
+        
+        STATE.currentEvent = { id, name, venue, date }; 
+        STATE.selectedSeats = [];
+        
+        document.getElementById('venue-title').textContent = venue; 
+        document.getElementById('ticket-event-name').textContent = name;
+        document.getElementById('ticket-venue').textContent = venue; 
+        document.getElementById('ticket-date').textContent = date;
+        
+        buildAllZones();
+    }
+
+async function confirmBooking() {
+    const count = STATE.selectedSeats.length;
+    const btn = document.getElementById('confirm-booking');
+    
+    if (count === 0) { 
+        btn.textContent = 'SELECT SEATS FIRST'; 
+        btn.style.background = 'var(--slate-mid)'; 
+        setTimeout(() => { btn.textContent = 'Confirm Booking →'; btn.style.background = ''; }, 2000); 
+        return; 
+    }
+
+    try {
+        btn.textContent = 'INITIALIZING PAYMENT...';
+        btn.style.background = 'var(--amber-muted)';
+        
+        const activeSeatElement = document.querySelector('.seat.selected');
+        if (!activeSeatElement) throw new Error("No seat selected.");
+
+        const token = localStorage.getItem('titangate_token');
+        if (!token) throw new Error("Authentication missing! Please log in.");
+
+        // 🎟️ 1. ASK BACKEND FOR THE BLANK RECEIPT (ORDER)
+        const orderResponse = await fetch(`${BACKEND_URL}/tickets/create-order`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: count * 2500 }) // Assuming ₹2500 per seat
+        });
+        const orderData = await orderResponse.json();
+
+        if (!orderData.success) throw new Error("Could not connect to payment gateway.");
+
+        // 🛡️ 2. OPEN THE RAZORPAY TOLL BOOTH
+        const options = {
+            key: "rzp_test_T2LTX22DLbMqTT", // 🎯 PASTE YOUR KEY ID HERE!
+            amount: orderData.order.amount,
+            currency: "INR",
+            name: "TitanGate",
+            description: "Premium Seat Booking",
+            order_id: orderData.order.id, // The receipt ID from your backend
+            
+            // 3. THIS ONLY RUNS IF PAYMENT IS SUCCESSFUL
+            handler: async function (response) {
+                btn.textContent = 'FINALIZING SEAT...';
+                
+                // Now we officially tell MongoDB to book the seat!
+                const ticketResponse = await fetch(`${BACKEND_URL}/tickets/confirm`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify({ 
+                        ticketId: activeSeatElement.dataset.ticketId,
+                        razorpay_payment_id: response.razorpay_payment_id // Sending proof to backend
+                    })
+                });
+
+                const result = await ticketResponse.json();
+
+                if (result.success) {
+                    btn.textContent = '🎉 SEAT OFFICIALLY YOURS!'; 
+                    btn.style.background = 'var(--mono-green)';
+                    
+                    document.querySelectorAll('.seat.selected').forEach(seat => { 
+                        seat.classList.remove('selected'); 
+                        seat.classList.add('booked'); 
+                        seat.style.pointerEvents = 'none'; 
+                        seat.style.backgroundColor = ''; 
+                    });
+                    
+                    STATE.selectedSeats = []; 
+                    if (typeof updateTicketCard === 'function') updateTicketCard();
+                    
+                    setTimeout(() => {
+                        window.location.href = 'profile.html';
+                    }, 1500);
+                } else {
+                    throw new Error(result.message || 'Server rejected confirmation request');
+                }
+            },
+            theme: { color: "#eab308" } // Your custom gold color
+        };
+
+        // Trigger the popup
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+
+    } catch (error) {
+        console.error("❌ Transaction Denied:", error.message);
+        alert(`TitanGate Error: ${error.message}`);
+        btn.textContent = 'TRANSACTION FAILED';
+        btn.style.background = 'var(--crimson)';
+        setTimeout(() => { btn.textContent = 'Confirm Booking →'; btn.style.background = ''; }, 4000);
+    }
+}
+
+      function generateBarcode() {
+        const container = document.getElementById('barcode-display'); 
+        if(!container) return;
+        container.innerHTML = '';
+        [3,1,2,1,3,1,1,2,3,1,2,1,1,3,2,1,3,1,2,1,1,2,3,1,1,3,2,1,3,1,2,1,1,2,1,3,2,1,3,1,2,1,1,3,2,1].forEach((w, i) => {
+            const bar = document.createElement('div'); bar.className = 'bar';
+            if (w === 3) bar.classList.add('thick'); else if (w === 1) bar.classList.add('thin');
+            bar.style.height = [30,35,40,45,38,42,33,37,44,36,41,39,43,34,38,42][i % 16] + 'px';
+            if (i % 12 === 0 && i > 0) { const gap = document.createElement('div'); gap.className = 'bar gap'; gap.style.height = '45px'; container.appendChild(gap); }
+            container.appendChild(bar);
+        });
+    }
+
+    // 🚀 INITIALIZATION & LISTENERS
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchLiveEvents();
+        generateBarcode();
+        
+        // 📻 THE WEBSOCKET LISTENER
+       // ==========================================
+// 📡 LIVE BOX OFFICE: Walkie-Talkie Receiver
+// ==========================================
+socket.on('seatUpdate', (data) => {
+    console.log("⚡ INCOMING BROADCAST:", data);
+
+    // 1. Ignore updates for other events
+    if (STATE.currentEvent && STATE.currentEvent.id !== data.eventId) return;
+
+    // 2. Find the exact seat on the screen
+    const seatElement = document.querySelector(`.seat[data-ticket-id="${data.ticketId}"]`);
+    
+    // If the seat isn't rendered on the screen yet, do nothing
+    if (!seatElement) return;
+
+    // ------------------------------------------
+    // ACTION: SOMEONE ELSE LOCKED A SEAT
+    // ------------------------------------------
+    if (data.action === 'locked') {
+        // 🛡️ ECHO SHIELD: If WE are the ones who locked it (it's red), ignore our own echo!
+        if (seatElement.classList.contains('selected')) return;
+        
+        seatElement.classList.remove('available');
+        seatElement.classList.add('reserved');
+        seatElement.style.pointerEvents = 'none';
+    } 
+    // ------------------------------------------
+    // ACTION: SOMEONE BOUGHT THE SEAT
+    // ------------------------------------------
+    else if (data.action === 'booked') {
+        seatElement.classList.remove('available', 'reserved', 'selected');
+        seatElement.classList.add('booked');
+        seatElement.style.pointerEvents = 'none';
+    }
+    // ------------------------------------------
+    // ACTION: SOMEONE DROPPED THEIR SEAT
+    // ------------------------------------------
+    else if (data.action === 'available') {
+        // 🛡️ ECHO SHIELD: If WE just cancelled it, our toggleSeat already updated the UI.
+        // The seat will already be '.available' — skip to avoid adding duplicate handlers.
+        if (seatElement.classList.contains('available')) {
+            console.log("↩️ Skipping own cancel echo — seat already available.");
+            return;
+        }
+        
+        // This is another user's cancel — update the seat for us
+        seatElement.classList.remove('selected', 'reserved', 'booked');
+        seatElement.classList.add('available');
+        
+        // Strip away inline CSS overrides so the stylesheet rules take over
+        seatElement.style.pointerEvents = '';  
+        seatElement.style.backgroundColor = '';
+        
+        // Re-arm the seat so it can be clicked again.
+        // 🎯 FIX: Do NOT use onclick= here! The original addEventListener from
+        // buildLiveZone is still alive. Adding onclick creates a DUPLICATE handler,
+        // which fires toggleSeat TWICE on the next click — causing the lock+cancel race.
+        seatElement.setAttribute('role', 'button');
+        seatElement.setAttribute('tabindex', '0');
+        seatElement.removeAttribute('aria-disabled');
+    }
+
+    // Refresh the UI counters
+    if (typeof updateTicketCard === 'function') {
+        updateTicketCard();
+    }
+});
+    });
+</script>

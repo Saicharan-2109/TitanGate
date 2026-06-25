@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TitanGate — Comm Link</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1C1B1F;
+      color: #EAE3D2;
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      background-image: url('bg.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-blend-mode: overlay;
+      background-color: rgba(28, 27, 31, 0.90);
+    }
+    
+    /* ── Top bar ── */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      border-bottom: 1px solid #333;
+      background: rgba(28, 27, 31, 0.95);
+    }
+    .topbar .brand { display: flex; align-items: center; gap: 10px; }
+    .topbar .logo {
+      background: #C84B43; color: #fff; font-weight: 700; font-size: 13px;
+      width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+    }
+    .topbar .brand-name { font-size: 15px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
+    .topbar-actions a { color: #B8B0A0; text-decoration: none; font-size: 11px; letter-spacing: 1px; }
+    .topbar-actions a:hover { color: #fff; }
+
+    /* ── Main Card ── */
+    .container {
+      max-width: 600px;
+      margin: 80px auto;
+      padding: 0 20px;
+    }
+    .contact-card {
+      background: rgba(20, 20, 25, 0.85);
+      border: 1px solid #333;
+      border-top: 4px solid #C84B43;
+      padding: 50px 40px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+    .title {
+      font-size: 26px;
+      color: #fff;
+      letter-spacing: 4px;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+    .subtitle {
+      font-size: 10px;
+      color: #C84B43;
+      letter-spacing: 3px;
+      margin-bottom: 50px;
+    }
+
+    /* ── Info Groups ── */
+    .info-group { margin-bottom: 35px; }
+    .info-label {
+      font-size: 10px;
+      color: #6B6876;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .info-value {
+      font-size: 16px;
+      color: #EAE3D2;
+      letter-spacing: 1px;
+    }
+    .info-value.highlight {
+      color: #fff;
+      font-weight: 700;
+      font-size: 22px;
+    }
+
+    .footer-text {
+      margin-top: 40px;
+      font-size: 9px;
+      color: #4A4850;
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">TG</div>
+      <span class="brand-name">TitanGate</span>
+    </div>
+    <div class="topbar-actions">
+      <a href="index.html">← Back to Box Office</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="contact-card">
+      <h1 class="title">Comm Link</h1>
+      <p class="subtitle">DIRECT VIP SUPPORT</p>
+
+      <div class="info-group">
+        <div class="info-label">Priority Email</div>
+        <div class="info-value highlight">titangate@gmail.com</div>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">Secure Line</div>
+        <div class="info-value">+91 86884 68364</div>
+      </div>
+
+      <div class="info-group">
+        <div class="info-label">Operating Hours</div>
+        <div class="info-value">24/7 — IST (Hyderabad HQ)</div>
+      </div>
+
+      <div class="footer-text">
+        AVERAGE RESPONSE TIME: 1.4 HOURS<br>
+        © 2026 TITANGATE NETWORK
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

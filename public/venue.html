@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TitanGate — Venue Dossier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1C1B1F;
+      color: #EAE3D2;
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+    }
+    /* ── Top bar ── */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      border-bottom: 1px solid #333;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .logo {
+      background: #C84B43; color: #fff; font-weight: 700; font-size: 13px;
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .brand-name { font-size: 15px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
+    .topbar a { color: #B8B0A0; text-decoration: none; font-size: 11px; letter-spacing: 1px; }
+    .topbar a:hover { color: #fff; }
+    /* ── Container ── */
+    .container { max-width: 720px; margin: 40px auto; padding: 0 20px 60px; }
+    /* ── Classification banner ── */
+    .classified {
+      border: 2px solid #C84B43;
+      padding: 8px 20px;
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #C84B43;
+      margin-bottom: 25px;
+    }
+    h1 {
+      font-size: 32px; color: #fff;
+      text-transform: uppercase; letter-spacing: 4px;
+      margin-bottom: 5px;
+    }
+    .subtitle {
+      font-size: 10px; color: #6B6876;
+      letter-spacing: 2px; margin-bottom: 35px;
+    }
+    /* ── Dossier section ── */
+    .section { margin-bottom: 35px; }
+    .section-label {
+      font-size: 10px; color: #C84B43;
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed #4A4850;
+    }
+    .section p {
+      font-size: 12px; color: #B8B0A0;
+      line-height: 1.8; letter-spacing: 0.5px;
+    }
+    /* ── Info grid ── */
+    .info-grid {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .info-box {
+      flex: 1;
+      min-width: 200px;
+      background: #232228;
+      border-left: 3px solid #C84B43;
+      padding: 18px 20px;
+    }
+    .info-box h3 {
+      font-size: 11px; color: #fff;
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .info-box p {
+      font-size: 11px; color: #B8B0A0;
+      line-height: 1.7;
+    }
+    /* ── Prohibited list ── */
+    .prohibited-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .prohibited-list li {
+      background: #232228;
+      border: 1px solid #4A4850;
+      padding: 6px 14px;
+      font-size: 10px;
+      color: #B8B0A0;
+      letter-spacing: 1px;
+    }
+    /* ── Coordinates ── */
+    .coords {
+      font-size: 11px; color: #4A4850;
+      letter-spacing: 1px; margin-top: 10px;
+    }
+    /* ── Stats row ── */
+    .stats-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat .val {
+      font-size: 24px; font-weight: 700; color: #C84B43;
+    }
+    .stat .lbl {
+      font-size: 9px; color: #6B6876;
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .footer-tag {
+      text-align: center;
+      font-size: 9px; color: #4A4850;
+      letter-spacing: 2px; margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">TG</div>
+      <span class="brand-name">TitanGate</span>
+    </div>
+    <a href="index.html">← Back to Box Office</a>
+  </div>
+  <div class="container">
+    <div class="classified">▲ Classified — Internal Dossier</div>
+    <h1>Gachibowli Stadium</h1>
+    <p class="subtitle">GMR ARENA COMPLEX · HYDERABAD, TELANGANA, INDIA · SECTOR-7</p>
+    <!-- Description -->
+    <div class="section">
+      <div class="section-label">// Intelligence Brief</div>
+      <p>
+        The GMR Arena at Gachibowli is a 30,000-capacity open-air fortress
+        situated in the tech corridor of Hyderabad. Originally commissioned
+        for international sporting events, the venue has been repurposed as
+        one of South India's most high-profile concert grounds. The stadium
+        features a massive 180-degree audience arc, military-grade sound
+        reinforcement, and a lighting rig that can be seen from 12 kilometers
+        away. TitanGate operations have designated this as the primary
+        deployment site for Season 2026 — Summer Edition.
+      </p>
+      <p class="coords">LAT 17.4401° N · LON 78.3489° E · ELEV 542m</p>
+    </div>
+    <!-- Stats -->
+    <div class="section">
+      <div class="section-label">// Venue Metrics</div>
+      <div class="stats-row">
+        <div class="stat"><div class="val">30K</div><div class="lbl">Capacity</div></div>
+        <div class="stat"><div class="val">180°</div><div class="lbl">Stage Arc</div></div>
+        <div class="stat"><div class="val">12km</div><div class="lbl">Light Range</div></div>
+        <div class="stat"><div class="val">3</div><div class="lbl">Zones</div></div>
+      </div>
+    </div>
+    <!-- Info grid -->
+    <div class="section">
+      <div class="section-label">// Operational Intel</div>
+      <div class="info-grid">
+        <div class="info-box">
+          <h3>Gates Open</h3>
+          <p>
+            Main gates: 16:00 IST<br>
+            VIP entry: 15:30 IST<br>
+            Show starts: 19:00 IST<br>
+            Curfew: 23:30 IST
+          </p>
+        </div>
+        <div class="info-box">
+          <h3>Parking Info</h3>
+          <p>
+            Lot A (VIP): ₹500 pre-book<br>
+            Lot B (General): ₹200<br>
+            Two-wheeler zone: Free<br>
+            Shuttle from HiTech City MMTS
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- Prohibited items -->
+    <div class="section">
+      <div class="section-label">// Prohibited Items</div>
+      <ul class="prohibited-list">
+        <li>✕ Glass bottles</li>
+        <li>✕ Weapons</li>
+        <li>✕ Professional cameras</li>
+        <li>✕ Drones</li>
+        <li>✕ Laser pointers</li>
+        <li>✕ Outside food</li>
+        <li>✕ Fireworks</li>
+        <li>✕ Selfie sticks</li>
+        <li>✕ Large bags (>A4)</li>
+      </ul>
+    </div>
+    <!-- Emergency -->
+    <div class="section">
+      <div class="section-label">// Emergency Protocol</div>
+      <p>
+        On-site medical team stationed at Gates 2, 5, and 8.
+        Fire exits marked with red strobes every 40 meters along the
+        perimeter wall. Emergency frequency: 108 (national) or
+        contact venue security at Gate 1 command post.
+      </p>
+    </div>
+    <div class="footer-tag">© 2026 TITANGATE — VENUE DOSSIER v1.0 · EYES ONLY</div>
+  </div>
+</body>
+</html>

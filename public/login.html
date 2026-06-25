@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TitanGate — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1C1B1F;
+      color: #EAE3D2;
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: #232228;
+      border: 2px solid #C84B43;
+      width: 400px;
+      padding: 40px 35px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    .logo {
+      background: #C84B43;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .brand h1 { font-size: 18px; letter-spacing: 3px; text-transform: uppercase; }
+    .card h2 {
+      font-size: 22px;
+      color: #fff;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .card p.sub { font-size: 10px; color: #6B6876; letter-spacing: 1px; margin-bottom: 25px; }
+    label {
+      display: block;
+      font-size: 10px;
+      color: #B8B0A0;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      background: #1A191E;
+      border: 1.5px solid #4A4850;
+      color: #fff;
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      margin-bottom: 18px;
+      outline: none;
+    }
+    input:focus { border-color: #C84B43; }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #C84B43;
+      border: none;
+      color: #fff;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+    .btn:hover { background: #E05A52; }
+    .switch {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 11px;
+      color: #6B6876;
+    }
+    .switch a { color: #C84B43; text-decoration: none; font-weight: 700; }
+    .switch a:hover { color: #E05A52; }
+    .divider {
+      border: none;
+      border-top: 1px dashed #4A4850;
+      margin: 20px 0;
+    }
+    .footer-tag {
+      text-align: center;
+      font-size: 9px;
+      color: #4A4850;
+      letter-spacing: 2px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <!-- Brand -->
+    <div class="brand">
+      <div class="logo">TG</div>
+      <h1>TitanGate</h1>
+    </div>
+    <h2>Log In</h2>
+    <p class="sub">ENTER YOUR CREDENTIALS TO ACCESS THE BOX OFFICE</p>
+    <!-- Login Form -->
+    <form id="login-form">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="your@email.com" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="••••••••" required>
+      <button type="submit" class="btn">Authenticate →</button>
+    </form>
+    <hr class="divider">
+    <p class="switch">Don't have a pass? <a href="signup.html">Create one</a></p>
+    <div class="footer-tag">© 2026 TITANGATE — AUTH v1.0</div>
+  </div>
+  <script>
+    // ──────────────────────────────────────────
+    // TitanGate Login — Vanilla JS Fetch Engine
+    // Backend: POST http://localhost:5000/users/login
+    // ──────────────────────────────────────────
+    const API = "http://localhost:5000";
+    document.getElementById("login-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      // 1. Grab input values
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      // 2. Basic check
+      if (!email || !password) {
+        alert("Please fill in both fields.");
+        return;
+      }
+      try {
+        // 3. Send POST request to backend
+        const res = await fetch(API + "/users/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        // 4. If success, save token and redirect
+        if (data.success === true && data.token) {
+          localStorage.setItem("titangate_token", data.token);
+          alert("✅ Login successful! Token saved.");
+          window.location.href = "index.html";
+        } else {
+          // Show whatever error the backend sent
+          alert("❌ " + (data.message || "Login failed. Check your credentials."));
+        }
+      } catch (err) {
+        // 5. Network error (backend not running, etc.)
+        console.error("Login error:", err);
+        alert("❌ Could not connect to server. Is your backend running on port 5000?");
+      }
+    });
+  </script>
+</body>
+</html>
