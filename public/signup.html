@@ -130,7 +130,7 @@
     // TitanGate Signup — Vanilla JS Fetch Engine
     // Backend: POST http://localhost:5000/users/signup
     // ──────────────────────────────────────────
-    const API = "http://localhost:5000";
+    const API = window.location.origin;
     document.getElementById("signup-form").addEventListener("submit", async function (e) {
       e.preventDefault();
       // 1. Grab input values

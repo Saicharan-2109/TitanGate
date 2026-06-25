@@ -128,7 +128,7 @@
     // TitanGate Login — Vanilla JS Fetch Engine
     // Backend: POST http://localhost:5000/users/login
     // ──────────────────────────────────────────
-    const API = "http://localhost:5000";
+    const API = window.location.origin;
     document.getElementById("login-form").addEventListener("submit", async function (e) {
       e.preventDefault();
       // 1. Grab input values
