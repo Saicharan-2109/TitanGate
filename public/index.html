@@ -352,7 +352,7 @@
     const STATE = { selectedSeats: [], currentEvent: { id: '', name: '', venue: '', date: '' } };
     let countdownTimer;
     let socket = null;
-    try { socket = io(BACKEND_URL); } catch(e) { console.warn('Socket.IO not available, real-time updates disabled'); }
+    if (typeof io !== 'undefined') { socket = io(BACKEND_URL); }
     
     async function fetchLiveEvents() {
         console.log("📡 Contacting the Vault for events...");
