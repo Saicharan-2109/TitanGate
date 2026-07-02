@@ -38,8 +38,10 @@ const bookNewTicket = async (req, res) => {
 const getAllTickets = async (req, res) => {
     try {
         // 🧹 AUTO-CLEANUP: Before sending the seats to anyone, unlock any expired reservations!
+        // 🎯 FIX: Must check lockedUntil !== null first, because MongoDB treats null < Date as TRUE,
+        // which was wiping out freshly reserved seats that hadn't set lockedUntil yet.
         await Ticket.updateMany(
-            { status: 'reserved', lockedUntil: { $lt: new Date() } },
+            { status: 'reserved', lockedUntil: { $ne: null, $lt: new Date() } },
             { $set: { status: 'available', user: null, lockedUntil: null } }
         );
 
@@ -92,7 +94,7 @@ const lockSeat = async (req, res, next) => {
                 user: req.user.id, // 🎯 THE FIX: You officially claim ownership here!
                 lockedUntil: lockExpirationTime
             },
-            { returnDocument: 'after' } // 🧹 THE SWAP: This stops the Mongoose terminal warning!
+            { new: true } // 🧹 THE SWAP: This stops the Mongoose terminal warning!
         );
 
         if (!ticket) {

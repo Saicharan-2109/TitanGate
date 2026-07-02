@@ -712,6 +712,7 @@ async function confirmBooking() {
                 const result = await ticketResponse.json();
 
                 if (result.success) {
+                    if (typeof countdownTimer !== 'undefined') clearInterval(countdownTimer);
                     btn.textContent = '🎉 SEAT OFFICIALLY YOURS!'; 
                     btn.style.background = 'var(--mono-green)';
                     
