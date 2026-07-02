@@ -153,7 +153,7 @@ const confirmBooking = async (req, res) => {
 
                // 🎨 6A. Generate the QR Code (It turns the Ticket ID into an image string)
         const qrDataUrl = await qrcode.toDataURL(ticket._id.toString());
-        ticket.qrCode = qrDataUrl; // Save the image to the database!
+        ticket.qrcode = qrDataUrl; // Save the image to the database!
         
         await ticket.save();
         // ✉️ 6B. Send the Email!

@@ -43,7 +43,7 @@ const eventRouter = require('./routes/eventRoutes');
 const userRoutes = require('./routes/userRoutes');
 const errorHandler = require('./middlewares/errorHandler');
 
-app.use(cors());
+app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5000' }));
 
 // 🛡️ SECURITY: Helmet sets secure HTTP headers (XSS protection, no sniffing, etc.)
 // We disable contentSecurityPolicy so our inline <script> tags and external CDNs still work

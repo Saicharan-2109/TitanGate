@@ -24,7 +24,10 @@ const signup = async (req, res) => {
         // 3. Print their VIP wristband
         const token = signToken(newUser._id, newUser.role);
 
-        // 4. Send them in!
+        // 4. Prevent the password hash from leaking in the response!
+        newUser.password = undefined;
+
+        // 5. Send them in!
         res.status(201).json({
             success: true,
             message: "Welcome to TitanGate! Your account is created.",

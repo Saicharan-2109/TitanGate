@@ -10,7 +10,7 @@ const eventSchema = new mongoose.Schema({
         required: [true, "Where is the concert happening? Venue required"]
     },
     eventDate: {
-        type: String, 
+        type: Date, 
         required: [true, "You need to specify the date of the event"]
     },
     totalSeats: {

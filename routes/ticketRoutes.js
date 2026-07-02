@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const verifyToken = require('../middlewares/verifyToken');
+const { body } = require('express-validator');
+const { validateInputs } = require('../middlewares/validate');
 
 // 1. ALL CONTROLLER IMPORT WEAPONS
 const { 
@@ -28,9 +30,20 @@ router.get('/my-tickets', verifyToken, getMyTickets);
 // ==========================================
 // 📥 POST ROUTES (Creating / State Changes)
 // ==========================================
-router.post('/',verifyToken,bookNewTicket);
-router.post('/reserve', verifyToken, reserveSeat);
-router.post('/confirm', verifyToken, confirmBooking);
+const reserveRules = [
+    body('event').notEmpty().withMessage('Event ID is required'),
+    body('seatNumber').notEmpty().withMessage('Seat number is required')
+];
+const confirmRules = [
+    body('ticketId').notEmpty().withMessage('Ticket ID is required'),
+    body('razorpay_payment_id').notEmpty().withMessage('Payment ID required'),
+    body('razorpay_order_id').notEmpty().withMessage('Order ID required'),
+    body('razorpay_signature').notEmpty().withMessage('Signature required')
+];
+
+router.post('/', verifyToken, bookNewTicket);
+router.post('/reserve', verifyToken, reserveRules, validateInputs, reserveSeat);
+router.post('/confirm', verifyToken, confirmRules, validateInputs, confirmBooking);
 router.post('/cancel', verifyToken, cancelReservation);
 
 // 🔒 The Lock Route: Protect it with verifyToken

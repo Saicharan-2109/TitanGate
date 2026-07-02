@@ -51,4 +51,7 @@ const ticketSchema = new mongoose.Schema({
    
 }, { timestamps: true });
 
+// Prevent duplicate seats for the same event!
+ticketSchema.index({ event: 1, seatCode: 1 }, { unique: true });
+
 module.exports = mongoose.model('Ticket', ticketSchema);

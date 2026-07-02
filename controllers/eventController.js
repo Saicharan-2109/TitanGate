@@ -3,7 +3,8 @@ const Event = require('../models/EventModel');
 // 1. Existing Recipe to build a brand new Master Event/Billboard
 const createNewEvent = async (req, res) => {
     try {
-        const newEvent = await Event.create(req.body);
+        const { eventName, venue, eventDate, totalSeats } = req.body;
+        const newEvent = await Event.create({ eventName, venue, eventDate, totalSeats });
         return res.status(201).json({
             success: true,
             message: "Master Event Billboard successfully created!",
