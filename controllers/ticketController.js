@@ -50,27 +50,7 @@ const getAllTickets = async (req, res) => {
     }
 };
 
-const buyTicket = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const updatedTicket = await Ticket.findByIdAndUpdate(id, { isBooked: true }, { new: true });
-        if (!updatedTicket) return res.status(404).json({ success: false, message: "Ticket not found." });
-        return res.status(200).json({ success: true, data: updatedTicket });
-    } catch (error) {
-        return res.status(500).json({ success: false, error: error.message });
-    }
-};
 
-const removeTicket = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const deletedTicket = await Ticket.findByIdAndDelete(id);
-        if (!deletedTicket) return res.status(404).json({ success: false, message: "Ticket not found." });
-        return res.status(200).json({ success: true, data: deletedTicket });
-    } catch (error) {
-        return res.status(500).json({ success: false, error: error.message });
-    }
-};
 
 const reserveSeat = async (req, res) => {
     try {
@@ -342,8 +322,6 @@ const createPaymentOrder = async (req, res) => {
 module.exports = { 
     bookNewTicket, 
     getAllTickets, 
-    buyTicket, 
-    removeTicket,
     reserveSeat,
     confirmBooking,
     cancelReservation,

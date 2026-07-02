@@ -41,7 +41,6 @@ connectDB();
 const ticketRouter = require('./routes/ticketRoutes');
 const eventRouter = require('./routes/eventRoutes');
 const userRoutes = require('./routes/userRoutes');
-const adminRouter = require('./routes/adminRoutes');
 const errorHandler = require('./middlewares/errorHandler');
 
 app.use(cors());
@@ -81,7 +80,6 @@ app.get('/ping', (req, res) => {
 app.use('/tickets', ticketLimiter, ticketRouter);
 app.use('/events', eventRouter);
 app.use('/users', authLimiter, userRoutes);
-app.use('/admin', adminRouter); // 🔥 Plug in the new Admin microservice!
 
 // 404 handler
 app.use((req, res) => {

@@ -9,8 +9,6 @@ const {
     reserveSeat, 
     confirmBooking, 
     cancelReservation,
-    buyTicket,     
-    removeTicket,  
     getMyTickets,
     lockSeat,
     createPaymentOrder       
@@ -44,8 +42,7 @@ router.post('/create-order', verifyToken, createPaymentOrder);
 // ==========================================
 // 🔄 PUT / DELETE ROUTES (Updates & Cleanup)
 // ==========================================
-router.put('/:id', verifyToken, buyTicket);
-router.delete('/:id', verifyToken, removeTicket);
+// These endpoints were removed for security reasons.
 
 // 3. EXPORT THE ROUTER NERVE
 module.exports = router;

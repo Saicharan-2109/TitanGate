@@ -2,8 +2,8 @@ const User = require('../models/UserModel');
 const jwt = require('jsonwebtoken');
 
 // 🎟️ THE WRISTBAND MACHINE: This little function makes the JWT
-const signToken = (id) => {
-    return jwt.sign({ id: id }, process.env.JWT_SECRET, {
+const signToken = (id, role) => {
+    return jwt.sign({ id: id, role: role }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
 };
@@ -22,7 +22,7 @@ const signup = async (req, res) => {
         });
 
         // 3. Print their VIP wristband
-        const token = signToken(newUser._id);
+        const token = signToken(newUser._id, newUser.role);
 
         // 4. Send them in!
         res.status(201).json({
@@ -56,7 +56,7 @@ const login = async (req, res) => {
         }
 
         // 4. Password is correct! Print a fresh VIP wristband
-        const token = signToken(user._id);
+        const token = signToken(user._id, user.role);
 
         // 5. Let them in! (But remove the password from the output so we don't accidentally send it to the frontend)
         user.password = undefined;

@@ -48,10 +48,6 @@
 - **Input Validation** — Express-validator middleware on all user-facing routes
 - **Payload Limiting** — 10KB JSON body limit to block oversized payloads
 
-### Admin Dashboard
-- **Event Factory** — Create events and auto-generate 100+ stadium seats (VIP/Premium/Standard zones) in a single API call
-- **Live Stats** — Real-time dashboard showing total revenue, seat availability breakdown, and event metrics
-
 ### Frontend
 - **Zero-Dependency UI** — Pure HTML/CSS/JS with no frameworks — ultra-fast DOM manipulation
 - **Dynamic CSS Stadium** — Renders hundreds of interactive seats using lightweight HTML/CSS instead of heavy SVGs
@@ -83,7 +79,6 @@ TitanGate/
 ├── config/
 │   └── db.js                  # MongoDB connection
 ├── controllers/
-│   ├── adminController.js     # Admin stats & event factory
 │   ├── authController.js      # Signup, login, JWT issuance
 │   ├── eventController.js     # Event CRUD
 │   └── ticketController.js    # Seat locking, booking, payments, QR, email
@@ -101,10 +96,8 @@ TitanGate/
 │   ├── signup.html            # Authentication — registration
 │   ├── venue.html             # Venue Dossier — event location details
 │   ├── contact.html           # Comm Link — contact information
-│   ├── profile.html           # User profile & ticket history
-│   └── admin.html             # Admin dashboard
+│   └── profile.html           # User profile & ticket history
 ├── routes/
-│   ├── adminRoutes.js         # /admin endpoints
 │   ├── eventRoutes.js         # /events endpoints
 │   ├── ticketRoutes.js        # /tickets endpoints
 │   └── userRoutes.js          # /users endpoints
@@ -206,12 +199,6 @@ docker run -p 5000:5000 --env-file .env titangate
 | Method | Endpoint | Description | Auth |
 |--------|----------|-------------|------|
 | `GET` | `/events` | List all events | ❌ |
-
-### Admin
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/admin/stats` | Dashboard stats & revenue | ✅ |
-| `POST` | `/admin/create-event` | Create event + generate seats | ✅ |
 
 ---
 
