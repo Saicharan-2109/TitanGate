@@ -1,6 +1,9 @@
 const Ticket = require('../models/TicketModel');
 const Event = require('../models/EventModel');
 const Razorpay = require('razorpay');
+const crypto = require('crypto');
+const qrcode = require('qrcode');  
+const sendEmail = require('../utils/sendEmail'); 
 
 // Unlock Razorpay using the keys from your Vault (.env)
 const razorpayInstance = new Razorpay({
@@ -34,6 +37,12 @@ const bookNewTicket = async (req, res) => {
 
 const getAllTickets = async (req, res) => {
     try {
+        // 🧹 AUTO-CLEANUP: Before sending the seats to anyone, unlock any expired reservations!
+        await Ticket.updateMany(
+            { status: 'reserved', lockedUntil: { $lt: new Date() } },
+            { $set: { status: 'available', user: null, lockedUntil: null } }
+        );
+
         const tickets = await Ticket.find().populate('event');
         return res.status(200).json({ success: true, count: tickets.length, data: tickets });
     } catch (error) {
@@ -127,39 +136,87 @@ const lockSeat = async (req, res, next) => {
     }
 };
 
-
-
-
-
 const confirmBooking = async (req, res) => {
     try {
-        console.log("🔑 req.user =", req.user);
-        console.log("🎫 req.body =", req.body);
+        // 1. Grab the ticket ID AND the Razorpay receipt details from the frontend
+        const { ticketId, razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body; 
         
-        // 🎯 FIX 1: Ask for the exact ticketId instead of the first name
-        const { ticketId } = req.body; 
-        
-        // 🎯 FIX 2: Search the Vault using the exact MongoDB ID
+        // 2. We MUST have all the Razorpay details to proceed
+        if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
+            return res.status(400).json({ success: false, message: "Payment verification failed. Missing receipt details." });
+        }
+
+        // 3. THE MATH: We use our Secret Key to generate our own signature
+        const bodyText = razorpay_order_id + "|" + razorpay_payment_id;
+        const expectedSignature = crypto
+            .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+            .update(bodyText.toString())
+            .digest('hex');
+
+        // 4. Compare our math to Razorpay's math. If they don't match, it's a hacker!
+        if (expectedSignature !== razorpay_signature) {
+            return res.status(400).json({ success: false, message: "Fraud detected! Invalid payment signature." });
+        }
+
+        // 5. The math matched! They actually paid. Let's find the ticket.
         const ticket = await Ticket.findById(ticketId); 
-        
         if (!ticket) return res.status(404).json({ success: false, message: "Ticket not found." });
 
         if (ticket.status === 'booked') {
             return res.status(400).json({ success: false, message: "Seat is already booked." });
         }
 
+        // 6. Give them the ticket!
         ticket.status = 'booked';
         ticket.user = req.user.id; 
         await ticket.save();
 
-        // 🎯 FIX 3: Grab the Walkie-Talkie and tell EVERYONE to paint it Red!
+               // 🎨 6A. Generate the QR Code (It turns the Ticket ID into an image string)
+        const qrDataUrl = await qrcode.toDataURL(ticket._id.toString());
+        ticket.qrCode = qrDataUrl; // Save the image to the database!
+        
+        await ticket.save();
+        // ✉️ 6B. Send the Email!
+        // We need the user's email, but we only have req.user.id. Let's fetch the User.
+        const User = require('../models/UserModel'); 
+        const user = await User.findById(req.user.id);
+        if (user) {
+            const emailHtml = `
+                <div style="font-family: Arial; padding: 20px; background-color: #1C1B1F; color: #EAE3D2;">
+                    <h1 style="color: #C84B43;">TitanGate 🎟️</h1>
+                    <h2>Booking Confirmed, ${user.name}!</h2>
+                    <p>Thank you for your purchase. Your seat has been secured.</p>
+                    <div style="background: #2A292F; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <p><strong>Seat:</strong> ${ticket.seatNumber}</p>
+                        <p><strong>Code:</strong> ${ticket.seatCode}</p>
+                    </div>
+                    <p>Please present this QR code at the gate:</p>
+                    <img src="cid:ticket_qr" alt="Ticket QR Code" style="border: 4px solid white; border-radius: 10px;" />
+                </div>
+            `;
+            // Hand the letter to the mailman! (We don't 'await' it because we don't want to slow down the frontend)
+            sendEmail({
+                email: user.email,
+                subject: '🎟️ Your TitanGate Ticket is Confirmed!',
+                html: emailHtml,
+                attachments: [
+                    {
+                        filename: 'qrcode.png',
+                        content: qrDataUrl.split(',')[1],
+                        encoding: 'base64',
+                        cid: 'ticket_qr' // This matches the cid in the img src!
+                    }
+                ]
+            }).catch(err => console.error("Mailman dropped the letter:", err));
+        }
+
+
+
+
+        // 7. Tell everyone else in the stadium that the seat is gone
         const io = req.app.get('socketio');
         if (io) {
-            io.emit('seatUpdate', { 
-                action: 'booked', 
-                ticketId: ticket._id, 
-                eventId: ticket.event 
-            });
+            io.emit('seatUpdate', { action: 'booked', ticketId: ticket._id, eventId: ticket.event });
         }
 
         res.status(200).json({ success: true, ticket });
@@ -168,6 +225,14 @@ const confirmBooking = async (req, res) => {
         res.status(500).json({ success: false, message: "Failed to confirm booking." });
     }
 };
+
+
+
+
+
+
+
+
 const cancelReservation = async (req, res) => {
     try {
         // Expect ticketId from frontend

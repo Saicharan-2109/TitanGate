@@ -5,6 +5,8 @@ console.log("🔥 SERVER FILE VERSION 999");
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 // 📞 1. SOCKET.IO IMPORTS
 const http = require('http'); 
@@ -39,11 +41,29 @@ connectDB();
 const ticketRouter = require('./routes/ticketRoutes');
 const eventRouter = require('./routes/eventRoutes');
 const userRoutes = require('./routes/userRoutes');
+const adminRouter = require('./routes/adminRoutes');
 const errorHandler = require('./middlewares/errorHandler');
 
 app.use(cors());
-app.use(express.json());
+
+// 🛡️ SECURITY: Helmet sets secure HTTP headers (XSS protection, no sniffing, etc.)
+// We disable contentSecurityPolicy so our inline <script> tags and external CDNs still work
+app.use(helmet({ contentSecurityPolicy: false }));
+
+app.use(express.json({ limit: '10kb' })); // 🛡️ Block oversized payloads
 app.use(express.static('public'));
+
+// 🛡️ SECURITY: Rate limiting — prevents spammers from hammering your API
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,  // 15-minute window
+    max: 20,                    // Max 20 login/signup attempts per 15 min
+    message: { success: false, message: "Too many attempts. Chill for 15 minutes." }
+});
+const ticketLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000,   // 1-minute window
+    max: 30,                    // Max 30 ticket actions per minute
+    message: { success: false, message: "Slow down! Too many ticket requests." }
+});
 
 // Global request logger
 app.use((req, res, next) => {
@@ -57,10 +77,11 @@ app.get('/ping', (req, res) => {
     res.json({ message: "pong" });
 });
 
-// Routes
-app.use('/tickets', ticketRouter);
+// Routes (with rate limiters attached)
+app.use('/tickets', ticketLimiter, ticketRouter);
 app.use('/events', eventRouter);
-app.use('/users', userRoutes);
+app.use('/users', authLimiter, userRoutes);
+app.use('/admin', adminRouter); // 🔥 Plug in the new Admin microservice!
 
 // 404 handler
 app.use((req, res) => {

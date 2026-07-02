@@ -41,6 +41,9 @@ const ticketSchema = new mongoose.Schema({
         default: 'available',
         required: true
     },
+    qrcode:{
+        type: String,
+    },
     lockedUntil: {
         type: Date,
         default: null // <-- This holds the 5-minute timer

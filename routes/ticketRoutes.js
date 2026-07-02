@@ -30,8 +30,8 @@ router.get('/my-tickets', verifyToken, getMyTickets);
 // ==========================================
 // 📥 POST ROUTES (Creating / State Changes)
 // ==========================================
-router.post('/', bookNewTicket);
-router.post('/reserve', reserveSeat);
+router.post('/',verifyToken,bookNewTicket);
+router.post('/reserve', verifyToken, reserveSeat);
 router.post('/confirm', verifyToken, confirmBooking);
 router.post('/cancel', verifyToken, cancelReservation);
 
@@ -39,13 +39,13 @@ router.post('/cancel', verifyToken, cancelReservation);
 router.post('/lock', verifyToken, lockSeat); // 👈 FIXED: No "ticketController." prefix needed
 
 
-router.post('/create-order', createPaymentOrder);
+router.post('/create-order', verifyToken, createPaymentOrder);
 
 // ==========================================
 // 🔄 PUT / DELETE ROUTES (Updates & Cleanup)
 // ==========================================
-router.put('/:id', buyTicket);
-router.delete('/:id', removeTicket);
+router.put('/:id', verifyToken, buyTicket);
+router.delete('/:id', verifyToken, removeTicket);
 
 // 3. EXPORT THE ROUTER NERVE
 module.exports = router;

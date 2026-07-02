@@ -668,7 +668,9 @@ async function confirmBooking() {
         // 🎟️ 1. ASK BACKEND FOR THE BLANK RECEIPT (ORDER)
         const orderResponse = await fetch(`${BACKEND_URL}/tickets/create-order`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' 
+                      ,'Authorization': `Bearer ${token}` 
+                     },
             body: JSON.stringify({ amount: count * 2500 }) // Assuming ₹2500 per seat
         });
         const orderData = await orderResponse.json();
@@ -687,9 +689,12 @@ async function confirmBooking() {
             // 3. THIS ONLY RUNS IF PAYMENT IS SUCCESSFUL
             handler: async function (response) {
                 btn.textContent = 'FINALIZING SEAT...';
+
+
+
                 
                 // Now we officially tell MongoDB to book the seat!
-                const ticketResponse = await fetch(`${BACKEND_URL}/tickets/confirm`, {
+                      const ticketResponse = await fetch(`${BACKEND_URL}/tickets/confirm`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -697,9 +702,12 @@ async function confirmBooking() {
                     },
                     body: JSON.stringify({ 
                         ticketId: activeSeatElement.dataset.ticketId,
-                        razorpay_payment_id: response.razorpay_payment_id // Sending proof to backend
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
                     })
                 });
+
 
                 const result = await ticketResponse.json();
 
